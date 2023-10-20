@@ -66,6 +66,22 @@ msg  = message_builder.message(data)
 ret  = hub.SubmitMessage(msg)
 ```
 
+## Signer
+The `Signer` class provides a simple interface to creating signers.
+
+To create a signer, you need:
+1. Fid and corresponding private key of the user that will approve the signer.
+2. The fid and private key of the application that will create and use the signer.
+
+Once you have this data, you create a new `Signer`, and use `approve_signer()` to submit the on-chain tx:
+```python
+# snippet from examples/approve_new_signer.py
+s = Signer( op_eth_provider, user_fid, user_key, app_fid, app_key )
+tx_hash = s.approve_signer()
+signer_private_key = s.key
+signer_public_key = s.signer_pub()
+```
+
 ## Updating protobuf shemas
 
 If you are installing from source, you use `generate_proto.sh <HUBBLE VERSION>`
