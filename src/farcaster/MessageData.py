@@ -48,7 +48,7 @@ class Cast:
         md.cast_add_body.mentions_positions.extend(mentions_positions)
         md.cast_add_body.embeds.extend(embeds)
         return md
-    def remove(self, target_hash) -> MessageData:
+    def remove(self, fid, target_hash) -> MessageData:
         return MessageData(
             type = MessageType.MESSAGE_TYPE_CAST_REMOVE,
             fid = fid,
