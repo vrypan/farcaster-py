@@ -41,10 +41,13 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-sed '/^version=".*"$/d' ${SRC_DIR}/__about__.py > ${SRC_DIR}/__about__.py.1
-echo version=\"${HUBBLE_VER}${BUILD}\" >> ${SRC_DIR}/__about__.py.1
-mv -f ${SRC_DIR}/__about__.py.1 ${SRC_DIR}/__about__.py
+# Automatic versioning needs https://github.com/farcasterxyz/hub-monorepo/issues/1518
+# to be resolved first. For now, I'll do versioning manually.
+#
+# sed '/^version=".*"$/d' ${SRC_DIR}/__about__.py > ${SRC_DIR}/__about__.py.1
+# echo version=\"${HUBBLE_VER}${BUILD}\" >> ${SRC_DIR}/__about__.py.1
+# mv -f ${SRC_DIR}/__about__.py.1 ${SRC_DIR}/__about__.py
 
 echo
 echo "Protobuf schemas parsed."
-echo "Version file updated to $(hatch version)"
+# echo "Version file updated to $(hatch version)"
