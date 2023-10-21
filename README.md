@@ -9,10 +9,21 @@ This is stil **work in progress**. Do not rely on this code for production purpo
 
 Until there is a proper pipy package, a quick and easy way to play around:
 
-1. Download the repo code: `git clone https://github.com/vrypan/farcaster-py.git`
-2. cd in the repo and install it: `pip install .` (You may want to create a venv first.)
-3. Copy `.env.sample` to `.env` and edit it.
-4. Go to the `examples/` directory and try `python ./get_user_casts.py`
+1. `pip install farcaster-py`
+2. Create `.env` with the following entries:
+```
+FARCASTER_HUB="farcaster_hub:grpc_port"
+
+OP_ETH_PROVIDER="OP provider endpoint"
+
+APP_FID="application fid"
+APP_PRIVATE_KEY="application private key"
+
+USER_FID="User fid"
+USER_PRIVATE_KEY="User private key" 
+APP_SIGNER_KEY="You have to create a signer first. Use examples/approve_new_signer.py." 
+```
+3. Download the examples found in `examples/` and try `python ./get_user_casts.py`
 
 # Internals
 

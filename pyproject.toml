@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-requirements-txt"]
 build-backend = "hatchling.build"
 
 [project]
-name = "farcaster"
-dynamic = ["version"]
+name = "farcaster-py"
+dynamic = ["version", "dependencies"]
 description = 'Python bindings for Farcaster'
 readme = "README.md"
 requires-python = ">=3.7"
@@ -24,12 +24,11 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
 
 [project.urls]
-Documentation = "https://github.com/unknown/farcaster#readme"
-Issues = "https://github.com/unknown/farcaster/issues"
-Source = "https://github.com/unknown/farcaster"
+Documentation = "https://github.com/vrypan/farcaster-py#readme"
+Issues = "https://github.com/vrypan/farcaster/issues"
+Source = "https://github.com/vrypan/farcaster"
 
 [tool.hatch.version]
 path = "src/farcaster/__about__.py"
@@ -155,3 +154,6 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.txt"]

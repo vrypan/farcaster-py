@@ -20,7 +20,6 @@ eth-keys==0.4.0
 eth-rlp==0.3.0
 eth-typing==3.5.0
 eth-utils==2.2.2
-farcaster @ file:///Users/vrypan/Devel/farcaster-py
 filelock==3.12.4
 frozenlist==1.4.0
 grpcio==1.59.0
