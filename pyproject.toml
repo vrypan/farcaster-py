@@ -27,11 +27,15 @@ classifiers = [
 
 [project.urls]
 Documentation = "https://github.com/vrypan/farcaster-py#readme"
-Issues = "https://github.com/vrypan/farcaster/issues"
-Source = "https://github.com/vrypan/farcaster"
+Issues = "https://github.com/vrypan/farcaster-py/issues"
+Source = "https://github.com/vrypan/farcaster-py"
 
 [tool.hatch.version]
 path = "src/farcaster/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/farcaster"]
+
 
 [tool.hatch.envs.default]
 dependencies = [
