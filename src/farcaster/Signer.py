@@ -30,7 +30,7 @@ SIGNED_KEY_REQUEST_TYPE = [
 ]
 
 class Signer:
-    def __init__(self, opp_eth_provider, account_fid, account_key, app_fid, app_key):
+    def __init__(self, op_eth_provider, account_fid, account_key, app_fid, app_key):
         self.account_fid = account_fid
         self.account = Account.from_key(account_key)
         self.app_fid = app_fid
@@ -40,13 +40,13 @@ class Signer:
         self.signer25519 = SigningKey(self.signer.key)
         self.key = self.signer.key
 
-        self.w3 = Web3(Web3.HTTPProvider(opp_eth_provider))
+        self.w3 = Web3(Web3.HTTPProvider(op_eth_provider))
         self.w3.eth.default_account = self.account.address
 
     def signer_pub(self):
         return self.signer25519.verify_key.encode()
     
-    def signed_params(self):
+    def _signed_params(self):
         deadline = int( time.time() + 60 * 60 ) # 1 hour from now. FC_TIME?
         signer_public_key = self.signer_pub()
         data = {
@@ -83,8 +83,8 @@ class Signer:
             address=Web3.to_checksum_address("0x00000000fc9e66f1c6d86d750b4af47ff0cc343d"), #KeyRegistry address 
             abi=KEY_REGISTRY_ABI)
 
-        params = self.signed_params()
-        prepare_tx = KeyRegistry.functions.add(1, self.signer_pub(), 1, self.signed_params()).build_transaction({
+        params = self._signed_params()
+        prepare_tx = KeyRegistry.functions.add(1, self.signer_pub(), 1, self._signed_params()).build_transaction({
             "from": self.account.address,
             "nonce": self.w3.eth.get_transaction_count(self.account.address),
         })
@@ -97,6 +97,24 @@ class Signer:
         self.w3.eth.wait_for_transaction_receipt(tx_hash)
         return tx_hash.hex()
 
+def removeSigner(op_eth_provider:str, user_key: str, signer_pub_key: str) -> str:
+    account = Account.from_key(user_key)
+    KEY_REGISTRY_ABI = json.loads(
+        resource_string(__name__, "abi/KeyRegistryABI.json")
+    )
+    w3 = Web3(Web3.HTTPProvider(op_eth_provider))
+    KeyRegistry = w3.eth.contract(
+        address=Web3.to_checksum_address("0x00000000fc9e66f1c6d86d750b4af47ff0cc343d"),
+        abi=KEY_REGISTRY_ABI
+    )
+    prepare_tx = KeyRegistry.functions.remove(bytes.fromhex(signer_pub_key[2:])).build_transaction({
+        "from": account.address,
+        "nonce": w3.eth.get_transaction_count(account.address),
+    })
 
+    signed_tx = w3.eth.account.sign_transaction(prepare_tx, private_key=account.key)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    w3.eth.wait_for_transaction_receipt(tx_hash)
+    return f"{tx_hash.hex()}"
 
 
