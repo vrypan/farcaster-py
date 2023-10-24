@@ -208,7 +208,7 @@ class HubService:
             page_token=page_token,
             reverse=reverse
         ))
-    def GetLinksByTarget(self, target_fid, link_type=None, page_size=50, page_token=None, reverse=True) -> MessagesResponse:
+    def GetLinksByTarget(self, target_fid, page_size=50, page_token=None, reverse=True, link_type=None) -> MessagesResponse:
         return self._stub.GetLinksByTarget(LinksByTargetRequest(
             target_fid = target_fid,
             link_type=link_type,

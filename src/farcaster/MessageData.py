@@ -31,11 +31,11 @@ class Link:
         return cls._link(MessageType.MESSAGE_TYPE_LINK_REMOVE, fid, target_fid, link_type)
 
 class Cast:
-    def add(self, fid, text, mentions=[], mentions_positions=[], embeds=[]) -> MessageData:
+    def add(self, fid, text, mentions=[], mentions_positions=[], embeds=[], timestamp=None) -> MessageData:
         md = MessageData(
             type = MessageType.MESSAGE_TYPE_CAST_ADD,
             fid = fid,
-            timestamp = int( time.time() ) - FARCASTER_EPOCH,
+            timestamp = timestamp if timestamp else int( time.time() ) - FARCASTER_EPOCH,
             network = FarcasterNetwork.FARCASTER_NETWORK_MAINNET,
             cast_add_body = CastAddBody(
                 text = text,
