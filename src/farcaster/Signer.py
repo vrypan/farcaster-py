@@ -7,7 +7,7 @@ from web3 import Web3
 import json
 from nacl.signing import SigningKey
 from pkg_resources import resource_string
-from . import CONTRACTS
+from . import ADDR
 
 SIGNED_KEY_REQUEST_METADATA_ABI = json.loads(
     resource_string(__name__, "abi/SignedKeyRequestMetadataABI.json")
