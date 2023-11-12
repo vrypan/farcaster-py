@@ -7,6 +7,7 @@ from web3 import Web3
 import json
 from nacl.signing import SigningKey
 from pkg_resources import resource_string
+from . import CONTRACTS
 
 SIGNED_KEY_REQUEST_METADATA_ABI = json.loads(
     resource_string(__name__, "abi/SignedKeyRequestMetadataABI.json")
@@ -20,7 +21,7 @@ SIGNED_KEY_REQUEST_VALIDATOR_EIP_712_DOMAIN = {
   'name': "Farcaster SignedKeyRequestValidator",
   'version': "1",
   'chainId': 10, # OP Mainnet
-  'verifyingContract': "0x00000000fc700472606ed4fa22623acf62c60553",
+  'verifyingContract': ADDR['SignedKeyRequestValidator'],
 } 
 
 SIGNED_KEY_REQUEST_TYPE = [
@@ -80,7 +81,7 @@ class Signer:
     
     def approve_signer(self) -> str: # Returns transaction hash
         KeyRegistry = self.w3.eth.contract(
-            address=Web3.to_checksum_address("0x00000000fc9e66f1c6d86d750b4af47ff0cc343d"), #KeyRegistry address 
+            address=Web3.to_checksum_address(ADDR['KeyGateway']), #KeyRegistry address 
             abi=KEY_REGISTRY_ABI)
 
         params = self._signed_params()
@@ -104,7 +105,7 @@ def removeSigner(op_eth_provider:str, user_key: str, signer_pub_key: str) -> str
     )
     w3 = Web3(Web3.HTTPProvider(op_eth_provider))
     KeyRegistry = w3.eth.contract(
-        address=Web3.to_checksum_address("0x00000000fc9e66f1c6d86d750b4af47ff0cc343d"),
+        address=Web3.to_checksum_address(ADDR['KeyRegistry']),
         abi=KEY_REGISTRY_ABI
     )
     prepare_tx = KeyRegistry.functions.remove(bytes.fromhex(signer_pub_key[2:])).build_transaction({
