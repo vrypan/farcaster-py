@@ -25,12 +25,21 @@ from . fcproto.hub_event_pb2 import HubEvent
 class HubService:
     def __init__(self, address, use_async=False, use_ssl=False):
         self._async = use_async
-        if use_ssl:
-            raise Exception("SSL not supported by farcaster.Hub.")
+        # if use_ssl:
+        #    self._channel = grpc.secure_channel(ADDR, grpc.ssl_channel_credentials())
+        #    # raise Exception("SSL not supported by farcaster.Hub.")
+        
         if use_async:
-            self._channel = grpc.aio.insecure_channel(address)
+            if use_ssl:
+                self._channel = grpc.aio.secure_channel(address, grpc.ssl_channel_credentials())
+            else:
+                self._channel = grpc.aio.insecure_channel(address)
         else:
-            self._channel = grpc.insecure_channel(address)
+            if use_ssl:
+                self._channel = grpc.secure_channel(address, grpc.ssl_channel_credentials())
+            else:
+                self._channel = grpc.insecure_channel(address)
+        grpc.channel_ready_future(self._channel).result(timeout=10)
         self._stub = rpc_pb2_grpc.HubServiceStub(self._channel)
     
     def GetInfo(self, db_stats=False) -> HubInfoResponse:
