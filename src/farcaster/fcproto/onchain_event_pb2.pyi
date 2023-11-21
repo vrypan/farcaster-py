@@ -41,7 +41,7 @@ ID_REGISTER_EVENT_TYPE_TRANSFER: IdRegisterEventType
 ID_REGISTER_EVENT_TYPE_CHANGE_RECOVERY: IdRegisterEventType
 
 class OnChainEvent(_message.Message):
-    __slots__ = ["type", "chain_id", "block_number", "block_hash", "block_timestamp", "transaction_hash", "log_index", "fid", "signer_event_body", "signer_migrated_event_body", "id_register_event_body", "storage_rent_event_body", "tx_index"]
+    __slots__ = ["type", "chain_id", "block_number", "block_hash", "block_timestamp", "transaction_hash", "log_index", "fid", "signer_event_body", "signer_migrated_event_body", "id_register_event_body", "storage_rent_event_body", "tx_index", "version"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     CHAIN_ID_FIELD_NUMBER: _ClassVar[int]
     BLOCK_NUMBER_FIELD_NUMBER: _ClassVar[int]
@@ -55,6 +55,7 @@ class OnChainEvent(_message.Message):
     ID_REGISTER_EVENT_BODY_FIELD_NUMBER: _ClassVar[int]
     STORAGE_RENT_EVENT_BODY_FIELD_NUMBER: _ClassVar[int]
     TX_INDEX_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
     type: OnChainEventType
     chain_id: int
     block_number: int
@@ -68,7 +69,8 @@ class OnChainEvent(_message.Message):
     id_register_event_body: IdRegisterEventBody
     storage_rent_event_body: StorageRentEventBody
     tx_index: int
-    def __init__(self, type: _Optional[_Union[OnChainEventType, str]] = ..., chain_id: _Optional[int] = ..., block_number: _Optional[int] = ..., block_hash: _Optional[bytes] = ..., block_timestamp: _Optional[int] = ..., transaction_hash: _Optional[bytes] = ..., log_index: _Optional[int] = ..., fid: _Optional[int] = ..., signer_event_body: _Optional[_Union[SignerEventBody, _Mapping]] = ..., signer_migrated_event_body: _Optional[_Union[SignerMigratedEventBody, _Mapping]] = ..., id_register_event_body: _Optional[_Union[IdRegisterEventBody, _Mapping]] = ..., storage_rent_event_body: _Optional[_Union[StorageRentEventBody, _Mapping]] = ..., tx_index: _Optional[int] = ...) -> None: ...
+    version: int
+    def __init__(self, type: _Optional[_Union[OnChainEventType, str]] = ..., chain_id: _Optional[int] = ..., block_number: _Optional[int] = ..., block_hash: _Optional[bytes] = ..., block_timestamp: _Optional[int] = ..., transaction_hash: _Optional[bytes] = ..., log_index: _Optional[int] = ..., fid: _Optional[int] = ..., signer_event_body: _Optional[_Union[SignerEventBody, _Mapping]] = ..., signer_migrated_event_body: _Optional[_Union[SignerMigratedEventBody, _Mapping]] = ..., id_register_event_body: _Optional[_Union[IdRegisterEventBody, _Mapping]] = ..., storage_rent_event_body: _Optional[_Union[StorageRentEventBody, _Mapping]] = ..., tx_index: _Optional[int] = ..., version: _Optional[int] = ...) -> None: ...
 
 class SignerEventBody(_message.Message):
     __slots__ = ["key", "key_type", "event_type", "metadata", "metadata_type"]
