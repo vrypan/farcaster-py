@@ -3,7 +3,8 @@ Python bindings for [Farcaster](https://farcaster.xyz).
 
 The bindings are based on the protocol implementation by [Hubble](https://thehubble.xyz) which can be found at [@farcaster/hub-monorepo](https://github.com/farcasterxyz/hub-monorepo/).
 
-This is stil **work in progress**. Do not rely on this code for production purposes.
+farcaster-py makes use of the gRPC interface exposed by farcaster hubs.
+
 
 # Quick start
 
