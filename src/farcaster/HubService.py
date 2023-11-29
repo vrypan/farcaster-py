@@ -160,7 +160,7 @@ class HubService:
     """
     def GetUsernameProof(self, name) -> UserNameProof:
         return self._stub.GetUsernameProof(UsernameProofRequest(name=bytes(name,'ascii')))
-    def GetUserNameProofsByFid(self, fid, page_size=50, page_token=None, reverse=True) -> UserNameProof:
+    def GetUserNameProofsByFid(self, fid, page_size=50, page_token=None, reverse=True) -> UsernameProofsResponse:
         return self._stub.GetUserNameProofsByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
 
     """
