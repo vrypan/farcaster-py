@@ -228,11 +228,18 @@ class HubService:
 
     """
     // Bulk Methods
+    // The Bulk methods don't have corresponding HTTP API endpoints because the 
+    // regular endpoints can be used to get all the messages
+    // @http-api: none
     rpc GetAllCastMessagesByFid(FidRequest) returns (MessagesResponse);
+    // @http-api: none
     rpc GetAllReactionMessagesByFid(FidRequest) returns (MessagesResponse);
+    // @http-api: none
     rpc GetAllVerificationMessagesByFid(FidRequest) returns (MessagesResponse);
-    rpc GetAllSignerMessagesByFid(FidRequest) returns (MessagesResponse);
+    // @http-api: none
     rpc GetAllUserDataMessagesByFid(FidRequest) returns (MessagesResponse);
+    // @http-api: none
+    rpc GetAllLinkMessagesByFid(FidRequest) returns (MessagesResponse);
     }
     """
     def GetAllCastMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
@@ -244,8 +251,8 @@ class HubService:
     def GetAllVerificationMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
         r = self._stub.GetAllVerificationMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
         return r
-    def GetAllSignerMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
-        r = self._stub.GetAllSignerMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
+    def GetAllLinkMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
+        r = self._stub.GetAllLinkMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
         return r
     def GetAllUserDataMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
         r = self._stub.GetAllUserDataMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
