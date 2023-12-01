@@ -225,3 +225,29 @@ class HubService:
             page_token=page_token,
             reverse=reverse  
         ))
+
+    """
+    // Bulk Methods
+    rpc GetAllCastMessagesByFid(FidRequest) returns (MessagesResponse);
+    rpc GetAllReactionMessagesByFid(FidRequest) returns (MessagesResponse);
+    rpc GetAllVerificationMessagesByFid(FidRequest) returns (MessagesResponse);
+    rpc GetAllSignerMessagesByFid(FidRequest) returns (MessagesResponse);
+    rpc GetAllUserDataMessagesByFid(FidRequest) returns (MessagesResponse);
+    }
+    """
+    def GetAllCastMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
+        r = self._stub.GetAllCastMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
+        return r
+    def GetAllReactionMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
+        r = self._stub.GetAllReactionMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
+        return r
+    def GetAllVerificationMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
+        r = self._stub.GetAllVerificationMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
+        return r
+    def GetAllSignerMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
+        r = self._stub.GetAllSignerMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
+        return r
+    def GetAllUserDataMessagesByFid(self, fid, page_size=1000, page_token=None, reverse=True) -> MessagesResponse:
+        r = self._stub.GetAllUserDataMessagesByFid(FidRequest(fid=fid, page_size=page_size, page_token=page_token, reverse=reverse))
+        return r
+    
