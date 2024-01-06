@@ -62,7 +62,7 @@ class Cast:
 class Reaction:
     def _do(cls, message_type, fid, reaction_type, cast_fid=None, cast_hash=None, target_url=None):
         if cast_hash:
-            hash_bytes = hash=bytes.fromhex(cast_hash[2:])
+            hash_bytes = bytes.fromhex(cast_hash[2:])
         return MessageData(
             type = message_type,
             fid = fid,
