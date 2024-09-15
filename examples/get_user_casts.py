@@ -9,6 +9,7 @@ if not hub_address:
 	print("No hub address. Check .env.sample")
 	sys.exit(1)
 
+print("FARCASTER_HUB = ", hub_address)
 hub = HubService(hub_address, use_async=False)
 casts = hub.GetCastsByFid(fid=280)
 for cast in casts.messages:
