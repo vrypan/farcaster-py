@@ -13,13 +13,15 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fhub_state.proto\";\n\x08HubState\x12\x18\n\x10last_fname_proof\x18\x02 \x01(\x04\x12\x15\n\rlast_l2_block\x18\x03 \x01(\x04\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fhub_state.proto\"H\n\x18ValidateOrRevokeJobState\x12\x1a\n\x12last_job_timestamp\x18\x01 \x01(\r\x12\x10\n\x08last_fid\x18\x02 \x01(\r\"x\n\x08HubState\x12\x18\n\x10last_fname_proof\x18\x02 \x01(\x04\x12\x15\n\rlast_l2_block\x18\x03 \x01(\x04\x12;\n\x18validate_or_revoke_state\x18\x05 \x01(\x0b\x32\x19.ValidateOrRevokeJobStateb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'hub_state_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
-  _globals['_HUBSTATE']._serialized_start=19
-  _globals['_HUBSTATE']._serialized_end=78
+  _globals['_VALIDATEORREVOKEJOBSTATE']._serialized_start=19
+  _globals['_VALIDATEORREVOKEJOBSTATE']._serialized_end=91
+  _globals['_HUBSTATE']._serialized_start=93
+  _globals['_HUBSTATE']._serialized_end=213
 # @@protoc_insertion_point(module_scope)

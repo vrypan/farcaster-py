@@ -2,6 +2,7 @@ from . import message_pb2 as _message_pb2
 from . import onchain_event_pb2 as _onchain_event_pb2
 from . import hub_event_pb2 as _hub_event_pb2
 from . import username_proof_pb2 as _username_proof_pb2
+from . import gossip_pb2 as _gossip_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -19,6 +20,11 @@ class StoreType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     STORE_TYPE_USER_DATA: _ClassVar[StoreType]
     STORE_TYPE_VERIFICATIONS: _ClassVar[StoreType]
     STORE_TYPE_USERNAME_PROOFS: _ClassVar[StoreType]
+
+class StorageUnitType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    UNIT_TYPE_LEGACY: _ClassVar[StorageUnitType]
+    UNIT_TYPE_2024: _ClassVar[StorageUnitType]
 STORE_TYPE_NONE: StoreType
 STORE_TYPE_CASTS: StoreType
 STORE_TYPE_LINKS: StoreType
@@ -26,18 +32,24 @@ STORE_TYPE_REACTIONS: StoreType
 STORE_TYPE_USER_DATA: StoreType
 STORE_TYPE_VERIFICATIONS: StoreType
 STORE_TYPE_USERNAME_PROOFS: StoreType
+UNIT_TYPE_LEGACY: StorageUnitType
+UNIT_TYPE_2024: StorageUnitType
 
 class Empty(_message.Message):
     __slots__ = []
     def __init__(self) -> None: ...
 
 class SubscribeRequest(_message.Message):
-    __slots__ = ["event_types", "from_id"]
+    __slots__ = ["event_types", "from_id", "total_shards", "shard_index"]
     EVENT_TYPES_FIELD_NUMBER: _ClassVar[int]
     FROM_ID_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_SHARDS_FIELD_NUMBER: _ClassVar[int]
+    SHARD_INDEX_FIELD_NUMBER: _ClassVar[int]
     event_types: _containers.RepeatedScalarFieldContainer[_hub_event_pb2.HubEventType]
     from_id: int
-    def __init__(self, event_types: _Optional[_Iterable[_Union[_hub_event_pb2.HubEventType, str]]] = ..., from_id: _Optional[int] = ...) -> None: ...
+    total_shards: int
+    shard_index: int
+    def __init__(self, event_types: _Optional[_Iterable[_Union[_hub_event_pb2.HubEventType, str]]] = ..., from_id: _Optional[int] = ..., total_shards: _Optional[int] = ..., shard_index: _Optional[int] = ...) -> None: ...
 
 class EventRequest(_message.Message):
     __slots__ = ["id"]
@@ -70,14 +82,16 @@ class HubInfoResponse(_message.Message):
     def __init__(self, version: _Optional[str] = ..., is_syncing: bool = ..., nickname: _Optional[str] = ..., root_hash: _Optional[str] = ..., db_stats: _Optional[_Union[DbStats, _Mapping]] = ..., peerId: _Optional[str] = ..., hub_operator_fid: _Optional[int] = ...) -> None: ...
 
 class DbStats(_message.Message):
-    __slots__ = ["num_messages", "num_fid_events", "num_fname_events"]
+    __slots__ = ["num_messages", "num_fid_events", "num_fname_events", "approx_size"]
     NUM_MESSAGES_FIELD_NUMBER: _ClassVar[int]
     NUM_FID_EVENTS_FIELD_NUMBER: _ClassVar[int]
     NUM_FNAME_EVENTS_FIELD_NUMBER: _ClassVar[int]
+    APPROX_SIZE_FIELD_NUMBER: _ClassVar[int]
     num_messages: int
     num_fid_events: int
     num_fname_events: int
-    def __init__(self, num_messages: _Optional[int] = ..., num_fid_events: _Optional[int] = ..., num_fname_events: _Optional[int] = ...) -> None: ...
+    approx_size: int
+    def __init__(self, num_messages: _Optional[int] = ..., num_fid_events: _Optional[int] = ..., num_fname_events: _Optional[int] = ..., approx_size: _Optional[int] = ...) -> None: ...
 
 class SyncStatusRequest(_message.Message):
     __slots__ = ["peerId"]
@@ -164,6 +178,22 @@ class FidRequest(_message.Message):
     page_token: bytes
     reverse: bool
     def __init__(self, fid: _Optional[int] = ..., page_size: _Optional[int] = ..., page_token: _Optional[bytes] = ..., reverse: bool = ...) -> None: ...
+
+class FidTimestampRequest(_message.Message):
+    __slots__ = ["fid", "page_size", "page_token", "reverse", "start_timestamp", "stop_timestamp"]
+    FID_FIELD_NUMBER: _ClassVar[int]
+    PAGE_SIZE_FIELD_NUMBER: _ClassVar[int]
+    PAGE_TOKEN_FIELD_NUMBER: _ClassVar[int]
+    REVERSE_FIELD_NUMBER: _ClassVar[int]
+    START_TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
+    STOP_TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
+    fid: int
+    page_size: int
+    page_token: bytes
+    reverse: bool
+    start_timestamp: int
+    stop_timestamp: int
+    def __init__(self, fid: _Optional[int] = ..., page_size: _Optional[int] = ..., page_token: _Optional[bytes] = ..., reverse: bool = ..., start_timestamp: _Optional[int] = ..., stop_timestamp: _Optional[int] = ...) -> None: ...
 
 class FidsRequest(_message.Message):
     __slots__ = ["page_size", "page_token", "reverse"]
@@ -290,18 +320,38 @@ class OnChainEventResponse(_message.Message):
     def __init__(self, events: _Optional[_Iterable[_Union[_onchain_event_pb2.OnChainEvent, _Mapping]]] = ..., next_page_token: _Optional[bytes] = ...) -> None: ...
 
 class StorageLimitsResponse(_message.Message):
-    __slots__ = ["limits"]
+    __slots__ = ["limits", "units", "unit_details"]
     LIMITS_FIELD_NUMBER: _ClassVar[int]
+    UNITS_FIELD_NUMBER: _ClassVar[int]
+    UNIT_DETAILS_FIELD_NUMBER: _ClassVar[int]
     limits: _containers.RepeatedCompositeFieldContainer[StorageLimit]
-    def __init__(self, limits: _Optional[_Iterable[_Union[StorageLimit, _Mapping]]] = ...) -> None: ...
+    units: int
+    unit_details: _containers.RepeatedCompositeFieldContainer[StorageUnitDetails]
+    def __init__(self, limits: _Optional[_Iterable[_Union[StorageLimit, _Mapping]]] = ..., units: _Optional[int] = ..., unit_details: _Optional[_Iterable[_Union[StorageUnitDetails, _Mapping]]] = ...) -> None: ...
+
+class StorageUnitDetails(_message.Message):
+    __slots__ = ["unit_type", "unit_size"]
+    UNIT_TYPE_FIELD_NUMBER: _ClassVar[int]
+    UNIT_SIZE_FIELD_NUMBER: _ClassVar[int]
+    unit_type: StorageUnitType
+    unit_size: int
+    def __init__(self, unit_type: _Optional[_Union[StorageUnitType, str]] = ..., unit_size: _Optional[int] = ...) -> None: ...
 
 class StorageLimit(_message.Message):
-    __slots__ = ["store_type", "limit"]
+    __slots__ = ["store_type", "name", "limit", "used", "earliestTimestamp", "earliestHash"]
     STORE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
+    USED_FIELD_NUMBER: _ClassVar[int]
+    EARLIESTTIMESTAMP_FIELD_NUMBER: _ClassVar[int]
+    EARLIESTHASH_FIELD_NUMBER: _ClassVar[int]
     store_type: StoreType
+    name: str
     limit: int
-    def __init__(self, store_type: _Optional[_Union[StoreType, str]] = ..., limit: _Optional[int] = ...) -> None: ...
+    used: int
+    earliestTimestamp: int
+    earliestHash: bytes
+    def __init__(self, store_type: _Optional[_Union[StoreType, str]] = ..., name: _Optional[str] = ..., limit: _Optional[int] = ..., used: _Optional[int] = ..., earliestTimestamp: _Optional[int] = ..., earliestHash: _Optional[bytes] = ...) -> None: ...
 
 class UsernameProofRequest(_message.Message):
     __slots__ = ["name"]
@@ -374,3 +424,107 @@ class IdRegistryEventByAddressRequest(_message.Message):
     ADDRESS_FIELD_NUMBER: _ClassVar[int]
     address: bytes
     def __init__(self, address: _Optional[bytes] = ...) -> None: ...
+
+class ContactInfoResponse(_message.Message):
+    __slots__ = ["contacts"]
+    CONTACTS_FIELD_NUMBER: _ClassVar[int]
+    contacts: _containers.RepeatedCompositeFieldContainer[_gossip_pb2.ContactInfoContentBody]
+    def __init__(self, contacts: _Optional[_Iterable[_Union[_gossip_pb2.ContactInfoContentBody, _Mapping]]] = ...) -> None: ...
+
+class ValidationResponse(_message.Message):
+    __slots__ = ["valid", "message"]
+    VALID_FIELD_NUMBER: _ClassVar[int]
+    MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    valid: bool
+    message: _message_pb2.Message
+    def __init__(self, valid: bool = ..., message: _Optional[_Union[_message_pb2.Message, _Mapping]] = ...) -> None: ...
+
+class StreamSyncRequest(_message.Message):
+    __slots__ = ["get_info", "get_current_peers", "stop_sync", "force_sync", "get_sync_status", "get_all_sync_ids_by_prefix", "get_all_messages_by_sync_ids", "get_sync_metadata_by_prefix", "get_sync_snapshot_by_prefix", "get_on_chain_events", "get_on_chain_signers_by_fid"]
+    GET_INFO_FIELD_NUMBER: _ClassVar[int]
+    GET_CURRENT_PEERS_FIELD_NUMBER: _ClassVar[int]
+    STOP_SYNC_FIELD_NUMBER: _ClassVar[int]
+    FORCE_SYNC_FIELD_NUMBER: _ClassVar[int]
+    GET_SYNC_STATUS_FIELD_NUMBER: _ClassVar[int]
+    GET_ALL_SYNC_IDS_BY_PREFIX_FIELD_NUMBER: _ClassVar[int]
+    GET_ALL_MESSAGES_BY_SYNC_IDS_FIELD_NUMBER: _ClassVar[int]
+    GET_SYNC_METADATA_BY_PREFIX_FIELD_NUMBER: _ClassVar[int]
+    GET_SYNC_SNAPSHOT_BY_PREFIX_FIELD_NUMBER: _ClassVar[int]
+    GET_ON_CHAIN_EVENTS_FIELD_NUMBER: _ClassVar[int]
+    GET_ON_CHAIN_SIGNERS_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    get_info: HubInfoRequest
+    get_current_peers: Empty
+    stop_sync: Empty
+    force_sync: SyncStatusRequest
+    get_sync_status: SyncStatusRequest
+    get_all_sync_ids_by_prefix: TrieNodePrefix
+    get_all_messages_by_sync_ids: SyncIds
+    get_sync_metadata_by_prefix: TrieNodePrefix
+    get_sync_snapshot_by_prefix: TrieNodePrefix
+    get_on_chain_events: OnChainEventRequest
+    get_on_chain_signers_by_fid: FidRequest
+    def __init__(self, get_info: _Optional[_Union[HubInfoRequest, _Mapping]] = ..., get_current_peers: _Optional[_Union[Empty, _Mapping]] = ..., stop_sync: _Optional[_Union[Empty, _Mapping]] = ..., force_sync: _Optional[_Union[SyncStatusRequest, _Mapping]] = ..., get_sync_status: _Optional[_Union[SyncStatusRequest, _Mapping]] = ..., get_all_sync_ids_by_prefix: _Optional[_Union[TrieNodePrefix, _Mapping]] = ..., get_all_messages_by_sync_ids: _Optional[_Union[SyncIds, _Mapping]] = ..., get_sync_metadata_by_prefix: _Optional[_Union[TrieNodePrefix, _Mapping]] = ..., get_sync_snapshot_by_prefix: _Optional[_Union[TrieNodePrefix, _Mapping]] = ..., get_on_chain_events: _Optional[_Union[OnChainEventRequest, _Mapping]] = ..., get_on_chain_signers_by_fid: _Optional[_Union[FidRequest, _Mapping]] = ...) -> None: ...
+
+class StreamError(_message.Message):
+    __slots__ = ["errCode", "message", "request"]
+    ERRCODE_FIELD_NUMBER: _ClassVar[int]
+    MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    REQUEST_FIELD_NUMBER: _ClassVar[int]
+    errCode: str
+    message: str
+    request: str
+    def __init__(self, errCode: _Optional[str] = ..., message: _Optional[str] = ..., request: _Optional[str] = ...) -> None: ...
+
+class StreamSyncResponse(_message.Message):
+    __slots__ = ["get_info", "get_current_peers", "stop_sync", "force_sync", "get_sync_status", "get_all_sync_ids_by_prefix", "get_all_messages_by_sync_ids", "get_sync_metadata_by_prefix", "get_sync_snapshot_by_prefix", "get_on_chain_events", "get_on_chain_signers_by_fid", "error"]
+    GET_INFO_FIELD_NUMBER: _ClassVar[int]
+    GET_CURRENT_PEERS_FIELD_NUMBER: _ClassVar[int]
+    STOP_SYNC_FIELD_NUMBER: _ClassVar[int]
+    FORCE_SYNC_FIELD_NUMBER: _ClassVar[int]
+    GET_SYNC_STATUS_FIELD_NUMBER: _ClassVar[int]
+    GET_ALL_SYNC_IDS_BY_PREFIX_FIELD_NUMBER: _ClassVar[int]
+    GET_ALL_MESSAGES_BY_SYNC_IDS_FIELD_NUMBER: _ClassVar[int]
+    GET_SYNC_METADATA_BY_PREFIX_FIELD_NUMBER: _ClassVar[int]
+    GET_SYNC_SNAPSHOT_BY_PREFIX_FIELD_NUMBER: _ClassVar[int]
+    GET_ON_CHAIN_EVENTS_FIELD_NUMBER: _ClassVar[int]
+    GET_ON_CHAIN_SIGNERS_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    ERROR_FIELD_NUMBER: _ClassVar[int]
+    get_info: HubInfoResponse
+    get_current_peers: ContactInfoResponse
+    stop_sync: SyncStatusResponse
+    force_sync: SyncStatusResponse
+    get_sync_status: SyncStatusResponse
+    get_all_sync_ids_by_prefix: SyncIds
+    get_all_messages_by_sync_ids: MessagesResponse
+    get_sync_metadata_by_prefix: TrieNodeMetadataResponse
+    get_sync_snapshot_by_prefix: TrieNodeSnapshotResponse
+    get_on_chain_events: OnChainEventResponse
+    get_on_chain_signers_by_fid: OnChainEventResponse
+    error: StreamError
+    def __init__(self, get_info: _Optional[_Union[HubInfoResponse, _Mapping]] = ..., get_current_peers: _Optional[_Union[ContactInfoResponse, _Mapping]] = ..., stop_sync: _Optional[_Union[SyncStatusResponse, _Mapping]] = ..., force_sync: _Optional[_Union[SyncStatusResponse, _Mapping]] = ..., get_sync_status: _Optional[_Union[SyncStatusResponse, _Mapping]] = ..., get_all_sync_ids_by_prefix: _Optional[_Union[SyncIds, _Mapping]] = ..., get_all_messages_by_sync_ids: _Optional[_Union[MessagesResponse, _Mapping]] = ..., get_sync_metadata_by_prefix: _Optional[_Union[TrieNodeMetadataResponse, _Mapping]] = ..., get_sync_snapshot_by_prefix: _Optional[_Union[TrieNodeSnapshotResponse, _Mapping]] = ..., get_on_chain_events: _Optional[_Union[OnChainEventResponse, _Mapping]] = ..., get_on_chain_signers_by_fid: _Optional[_Union[OnChainEventResponse, _Mapping]] = ..., error: _Optional[_Union[StreamError, _Mapping]] = ...) -> None: ...
+
+class StreamFetchRequest(_message.Message):
+    __slots__ = ["idempotency_key", "cast_messages_by_fid", "reaction_messages_by_fid", "verification_messages_by_fid", "user_data_messages_by_fid", "link_messages_by_fid"]
+    IDEMPOTENCY_KEY_FIELD_NUMBER: _ClassVar[int]
+    CAST_MESSAGES_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    REACTION_MESSAGES_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    VERIFICATION_MESSAGES_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    USER_DATA_MESSAGES_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    LINK_MESSAGES_BY_FID_FIELD_NUMBER: _ClassVar[int]
+    idempotency_key: str
+    cast_messages_by_fid: FidTimestampRequest
+    reaction_messages_by_fid: FidTimestampRequest
+    verification_messages_by_fid: FidTimestampRequest
+    user_data_messages_by_fid: FidTimestampRequest
+    link_messages_by_fid: FidTimestampRequest
+    def __init__(self, idempotency_key: _Optional[str] = ..., cast_messages_by_fid: _Optional[_Union[FidTimestampRequest, _Mapping]] = ..., reaction_messages_by_fid: _Optional[_Union[FidTimestampRequest, _Mapping]] = ..., verification_messages_by_fid: _Optional[_Union[FidTimestampRequest, _Mapping]] = ..., user_data_messages_by_fid: _Optional[_Union[FidTimestampRequest, _Mapping]] = ..., link_messages_by_fid: _Optional[_Union[FidTimestampRequest, _Mapping]] = ...) -> None: ...
+
+class StreamFetchResponse(_message.Message):
+    __slots__ = ["idempotency_key", "messages", "error"]
+    IDEMPOTENCY_KEY_FIELD_NUMBER: _ClassVar[int]
+    MESSAGES_FIELD_NUMBER: _ClassVar[int]
+    ERROR_FIELD_NUMBER: _ClassVar[int]
+    idempotency_key: str
+    messages: MessagesResponse
+    error: StreamError
+    def __init__(self, idempotency_key: _Optional[str] = ..., messages: _Optional[_Union[MessagesResponse, _Mapping]] = ..., error: _Optional[_Union[StreamError, _Mapping]] = ...) -> None: ...

@@ -59,15 +59,22 @@ message NetworkLatencyMessage {
     }
 }
 
+message MessageBundle {
+  bytes hash = 1;
+  repeated Message messages = 2;
+}
+
 message GossipMessage {
   oneof content {
     Message message = 1;
 //  Deprecated
 //  IdRegistryEvent id_registry_event = 2;
-    ContactInfoContent contact_info_content = 3;
+    ContactInfoContent contact_info_content = 3;    
     NetworkLatencyMessage network_latency_message = 7;
+    MessageBundle message_bundle = 9;
   }
   repeated string topics = 4;
   bytes peer_id = 5;
   GossipVersion version = 6;
+  uint32 timestamp = 8; // Farcaster epoch timestamp in seconds when this message was first created
 }

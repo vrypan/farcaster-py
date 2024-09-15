@@ -102,18 +102,30 @@ class NetworkLatencyMessage(_message.Message):
     ack_message: AckMessageBody
     def __init__(self, ping_message: _Optional[_Union[PingMessageBody, _Mapping]] = ..., ack_message: _Optional[_Union[AckMessageBody, _Mapping]] = ...) -> None: ...
 
+class MessageBundle(_message.Message):
+    __slots__ = ["hash", "messages"]
+    HASH_FIELD_NUMBER: _ClassVar[int]
+    MESSAGES_FIELD_NUMBER: _ClassVar[int]
+    hash: bytes
+    messages: _containers.RepeatedCompositeFieldContainer[_message_pb2.Message]
+    def __init__(self, hash: _Optional[bytes] = ..., messages: _Optional[_Iterable[_Union[_message_pb2.Message, _Mapping]]] = ...) -> None: ...
+
 class GossipMessage(_message.Message):
-    __slots__ = ["message", "contact_info_content", "network_latency_message", "topics", "peer_id", "version"]
+    __slots__ = ["message", "contact_info_content", "network_latency_message", "message_bundle", "topics", "peer_id", "version", "timestamp"]
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
     CONTACT_INFO_CONTENT_FIELD_NUMBER: _ClassVar[int]
     NETWORK_LATENCY_MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    MESSAGE_BUNDLE_FIELD_NUMBER: _ClassVar[int]
     TOPICS_FIELD_NUMBER: _ClassVar[int]
     PEER_ID_FIELD_NUMBER: _ClassVar[int]
     VERSION_FIELD_NUMBER: _ClassVar[int]
+    TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     message: _message_pb2.Message
     contact_info_content: ContactInfoContent
     network_latency_message: NetworkLatencyMessage
+    message_bundle: MessageBundle
     topics: _containers.RepeatedScalarFieldContainer[str]
     peer_id: bytes
     version: GossipVersion
-    def __init__(self, message: _Optional[_Union[_message_pb2.Message, _Mapping]] = ..., contact_info_content: _Optional[_Union[ContactInfoContent, _Mapping]] = ..., network_latency_message: _Optional[_Union[NetworkLatencyMessage, _Mapping]] = ..., topics: _Optional[_Iterable[str]] = ..., peer_id: _Optional[bytes] = ..., version: _Optional[_Union[GossipVersion, str]] = ...) -> None: ...
+    timestamp: int
+    def __init__(self, message: _Optional[_Union[_message_pb2.Message, _Mapping]] = ..., contact_info_content: _Optional[_Union[ContactInfoContent, _Mapping]] = ..., network_latency_message: _Optional[_Union[NetworkLatencyMessage, _Mapping]] = ..., message_bundle: _Optional[_Union[MessageBundle, _Mapping]] = ..., topics: _Optional[_Iterable[str]] = ..., peer_id: _Optional[bytes] = ..., version: _Optional[_Union[GossipVersion, str]] = ..., timestamp: _Optional[int] = ...) -> None: ...

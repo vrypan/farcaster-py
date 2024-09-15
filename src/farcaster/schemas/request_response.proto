@@ -4,12 +4,15 @@ import "message.proto";
 import "onchain_event.proto";
 import "hub_event.proto";
 import "username_proof.proto";
+import "gossip.proto";
 
 message Empty {}
 
 message SubscribeRequest {
   repeated HubEventType event_types = 1;
   optional uint64 from_id = 2;
+  optional uint64 total_shards = 3;
+  optional uint64 shard_index = 4;
 }
 
 message EventRequest {
@@ -35,6 +38,7 @@ message DbStats {
   uint64 num_messages = 1;
   uint64 num_fid_events = 2;
   uint64 num_fname_events = 3;
+  uint64 approx_size = 4;
 }
 
 message SyncStatusRequest {
@@ -86,6 +90,15 @@ message FidRequest {
   optional uint32 page_size = 2;
   optional bytes page_token = 3;
   optional bool reverse = 4;
+}
+
+message FidTimestampRequest {
+  uint64 fid = 1;
+  optional uint32 page_size = 2;
+  optional bytes page_token = 3;
+  optional bool reverse = 4;
+  optional uint64 start_timestamp = 5;
+  optional uint64 stop_timestamp = 6;
 }
 
 message FidsRequest {
@@ -170,6 +183,8 @@ message OnChainEventResponse {
 
 message StorageLimitsResponse {
   repeated StorageLimit limits = 1;
+  uint32 units = 2;
+  repeated StorageUnitDetails unit_details = 3;
 }
 
 enum StoreType {
@@ -182,9 +197,23 @@ enum StoreType {
   STORE_TYPE_USERNAME_PROOFS = 6;
 }
 
+enum StorageUnitType {
+  UNIT_TYPE_LEGACY = 0;
+  UNIT_TYPE_2024 = 1;
+}
+
+message StorageUnitDetails {
+  StorageUnitType unit_type = 1;
+  uint32 unit_size = 2;
+}
+
 message StorageLimit {
   StoreType store_type = 1;
-  uint64 limit = 2;
+  string name = 2;
+  uint64 limit = 3;
+  uint64 used = 4;
+  uint64 earliestTimestamp = 5;
+  bytes earliestHash = 6;
 }
 
 message UsernameProofRequest {
@@ -233,4 +262,71 @@ message LinksByTargetRequest {
 
 message IdRegistryEventByAddressRequest {
   bytes address = 1;
+}
+
+message ContactInfoResponse {
+  repeated ContactInfoContentBody contacts = 1;
+}
+
+message ValidationResponse {
+  bool valid = 1;
+  Message message = 2;
+}
+
+message StreamSyncRequest {
+  oneof request {
+    HubInfoRequest get_info = 1;
+    Empty get_current_peers = 2;
+    Empty stop_sync = 3;
+    SyncStatusRequest force_sync = 4;
+    SyncStatusRequest get_sync_status = 5;
+    TrieNodePrefix get_all_sync_ids_by_prefix = 6;
+    SyncIds get_all_messages_by_sync_ids = 7;
+    TrieNodePrefix get_sync_metadata_by_prefix = 8;
+    TrieNodePrefix get_sync_snapshot_by_prefix = 9;
+    OnChainEventRequest get_on_chain_events = 10;
+    FidRequest get_on_chain_signers_by_fid = 11;
+  }
+}
+
+message StreamError {
+  string errCode = 1;
+  string message = 2;
+  string request = 3;
+}
+
+message StreamSyncResponse {
+  oneof response {
+    HubInfoResponse get_info = 1;
+    ContactInfoResponse get_current_peers = 2;
+    SyncStatusResponse stop_sync = 3;
+    SyncStatusResponse force_sync = 4;
+    SyncStatusResponse get_sync_status = 5;
+    SyncIds get_all_sync_ids_by_prefix = 6;
+    MessagesResponse get_all_messages_by_sync_ids = 7;
+    TrieNodeMetadataResponse get_sync_metadata_by_prefix = 8;
+    TrieNodeSnapshotResponse get_sync_snapshot_by_prefix = 9;
+    OnChainEventResponse get_on_chain_events = 10;
+    OnChainEventResponse get_on_chain_signers_by_fid = 11;
+    StreamError error = 12;
+  }
+}
+
+message StreamFetchRequest {
+  string idempotency_key = 1;
+  oneof request {
+    FidTimestampRequest cast_messages_by_fid = 2;
+    FidTimestampRequest reaction_messages_by_fid = 3;
+    FidTimestampRequest verification_messages_by_fid = 4;
+    FidTimestampRequest user_data_messages_by_fid = 5;
+    FidTimestampRequest link_messages_by_fid = 6;
+  }
+}
+
+message StreamFetchResponse {
+  string idempotency_key = 1;
+  oneof response {
+    MessagesResponse messages = 2;
+    StreamError error = 3;
+  }
 }

@@ -31,6 +31,8 @@ class MessageType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     MESSAGE_TYPE_VERIFICATION_REMOVE: _ClassVar[MessageType]
     MESSAGE_TYPE_USER_DATA_ADD: _ClassVar[MessageType]
     MESSAGE_TYPE_USERNAME_PROOF: _ClassVar[MessageType]
+    MESSAGE_TYPE_FRAME_ACTION: _ClassVar[MessageType]
+    MESSAGE_TYPE_LINK_COMPACT_STATE: _ClassVar[MessageType]
 
 class FarcasterNetwork(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
@@ -48,11 +50,21 @@ class UserDataType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     USER_DATA_TYPE_URL: _ClassVar[UserDataType]
     USER_DATA_TYPE_USERNAME: _ClassVar[UserDataType]
 
+class CastType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    CAST: _ClassVar[CastType]
+    LONG_CAST: _ClassVar[CastType]
+
 class ReactionType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     REACTION_TYPE_NONE: _ClassVar[ReactionType]
     REACTION_TYPE_LIKE: _ClassVar[ReactionType]
     REACTION_TYPE_RECAST: _ClassVar[ReactionType]
+
+class Protocol(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    PROTOCOL_ETHEREUM: _ClassVar[Protocol]
+    PROTOCOL_SOLANA: _ClassVar[Protocol]
 HASH_SCHEME_NONE: HashScheme
 HASH_SCHEME_BLAKE3: HashScheme
 SIGNATURE_SCHEME_NONE: SignatureScheme
@@ -69,6 +81,8 @@ MESSAGE_TYPE_VERIFICATION_ADD_ETH_ADDRESS: MessageType
 MESSAGE_TYPE_VERIFICATION_REMOVE: MessageType
 MESSAGE_TYPE_USER_DATA_ADD: MessageType
 MESSAGE_TYPE_USERNAME_PROOF: MessageType
+MESSAGE_TYPE_FRAME_ACTION: MessageType
+MESSAGE_TYPE_LINK_COMPACT_STATE: MessageType
 FARCASTER_NETWORK_NONE: FarcasterNetwork
 FARCASTER_NETWORK_MAINNET: FarcasterNetwork
 FARCASTER_NETWORK_TESTNET: FarcasterNetwork
@@ -79,9 +93,13 @@ USER_DATA_TYPE_DISPLAY: UserDataType
 USER_DATA_TYPE_BIO: UserDataType
 USER_DATA_TYPE_URL: UserDataType
 USER_DATA_TYPE_USERNAME: UserDataType
+CAST: CastType
+LONG_CAST: CastType
 REACTION_TYPE_NONE: ReactionType
 REACTION_TYPE_LIKE: ReactionType
 REACTION_TYPE_RECAST: ReactionType
+PROTOCOL_ETHEREUM: Protocol
+PROTOCOL_SOLANA: Protocol
 
 class Message(_message.Message):
     __slots__ = ["data", "hash", "hash_scheme", "signature", "signature_scheme", "signer", "data_bytes"]
@@ -102,7 +120,7 @@ class Message(_message.Message):
     def __init__(self, data: _Optional[_Union[MessageData, _Mapping]] = ..., hash: _Optional[bytes] = ..., hash_scheme: _Optional[_Union[HashScheme, str]] = ..., signature: _Optional[bytes] = ..., signature_scheme: _Optional[_Union[SignatureScheme, str]] = ..., signer: _Optional[bytes] = ..., data_bytes: _Optional[bytes] = ...) -> None: ...
 
 class MessageData(_message.Message):
-    __slots__ = ["type", "fid", "timestamp", "network", "cast_add_body", "cast_remove_body", "reaction_body", "verification_add_eth_address_body", "verification_remove_body", "user_data_body", "link_body", "username_proof_body"]
+    __slots__ = ["type", "fid", "timestamp", "network", "cast_add_body", "cast_remove_body", "reaction_body", "verification_add_address_body", "verification_remove_body", "user_data_body", "link_body", "username_proof_body", "frame_action_body", "link_compact_state_body"]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     FID_FIELD_NUMBER: _ClassVar[int]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
@@ -110,11 +128,13 @@ class MessageData(_message.Message):
     CAST_ADD_BODY_FIELD_NUMBER: _ClassVar[int]
     CAST_REMOVE_BODY_FIELD_NUMBER: _ClassVar[int]
     REACTION_BODY_FIELD_NUMBER: _ClassVar[int]
-    VERIFICATION_ADD_ETH_ADDRESS_BODY_FIELD_NUMBER: _ClassVar[int]
+    VERIFICATION_ADD_ADDRESS_BODY_FIELD_NUMBER: _ClassVar[int]
     VERIFICATION_REMOVE_BODY_FIELD_NUMBER: _ClassVar[int]
     USER_DATA_BODY_FIELD_NUMBER: _ClassVar[int]
     LINK_BODY_FIELD_NUMBER: _ClassVar[int]
     USERNAME_PROOF_BODY_FIELD_NUMBER: _ClassVar[int]
+    FRAME_ACTION_BODY_FIELD_NUMBER: _ClassVar[int]
+    LINK_COMPACT_STATE_BODY_FIELD_NUMBER: _ClassVar[int]
     type: MessageType
     fid: int
     timestamp: int
@@ -122,12 +142,14 @@ class MessageData(_message.Message):
     cast_add_body: CastAddBody
     cast_remove_body: CastRemoveBody
     reaction_body: ReactionBody
-    verification_add_eth_address_body: VerificationAddEthAddressBody
+    verification_add_address_body: VerificationAddAddressBody
     verification_remove_body: VerificationRemoveBody
     user_data_body: UserDataBody
     link_body: LinkBody
     username_proof_body: _username_proof_pb2.UserNameProof
-    def __init__(self, type: _Optional[_Union[MessageType, str]] = ..., fid: _Optional[int] = ..., timestamp: _Optional[int] = ..., network: _Optional[_Union[FarcasterNetwork, str]] = ..., cast_add_body: _Optional[_Union[CastAddBody, _Mapping]] = ..., cast_remove_body: _Optional[_Union[CastRemoveBody, _Mapping]] = ..., reaction_body: _Optional[_Union[ReactionBody, _Mapping]] = ..., verification_add_eth_address_body: _Optional[_Union[VerificationAddEthAddressBody, _Mapping]] = ..., verification_remove_body: _Optional[_Union[VerificationRemoveBody, _Mapping]] = ..., user_data_body: _Optional[_Union[UserDataBody, _Mapping]] = ..., link_body: _Optional[_Union[LinkBody, _Mapping]] = ..., username_proof_body: _Optional[_Union[_username_proof_pb2.UserNameProof, _Mapping]] = ...) -> None: ...
+    frame_action_body: FrameActionBody
+    link_compact_state_body: LinkCompactStateBody
+    def __init__(self, type: _Optional[_Union[MessageType, str]] = ..., fid: _Optional[int] = ..., timestamp: _Optional[int] = ..., network: _Optional[_Union[FarcasterNetwork, str]] = ..., cast_add_body: _Optional[_Union[CastAddBody, _Mapping]] = ..., cast_remove_body: _Optional[_Union[CastRemoveBody, _Mapping]] = ..., reaction_body: _Optional[_Union[ReactionBody, _Mapping]] = ..., verification_add_address_body: _Optional[_Union[VerificationAddAddressBody, _Mapping]] = ..., verification_remove_body: _Optional[_Union[VerificationRemoveBody, _Mapping]] = ..., user_data_body: _Optional[_Union[UserDataBody, _Mapping]] = ..., link_body: _Optional[_Union[LinkBody, _Mapping]] = ..., username_proof_body: _Optional[_Union[_username_proof_pb2.UserNameProof, _Mapping]] = ..., frame_action_body: _Optional[_Union[FrameActionBody, _Mapping]] = ..., link_compact_state_body: _Optional[_Union[LinkCompactStateBody, _Mapping]] = ...) -> None: ...
 
 class UserDataBody(_message.Message):
     __slots__ = ["type", "value"]
@@ -146,7 +168,7 @@ class Embed(_message.Message):
     def __init__(self, url: _Optional[str] = ..., cast_id: _Optional[_Union[CastId, _Mapping]] = ...) -> None: ...
 
 class CastAddBody(_message.Message):
-    __slots__ = ["embeds_deprecated", "mentions", "parent_cast_id", "parent_url", "text", "mentions_positions", "embeds"]
+    __slots__ = ["embeds_deprecated", "mentions", "parent_cast_id", "parent_url", "text", "mentions_positions", "embeds", "type"]
     EMBEDS_DEPRECATED_FIELD_NUMBER: _ClassVar[int]
     MENTIONS_FIELD_NUMBER: _ClassVar[int]
     PARENT_CAST_ID_FIELD_NUMBER: _ClassVar[int]
@@ -154,6 +176,7 @@ class CastAddBody(_message.Message):
     TEXT_FIELD_NUMBER: _ClassVar[int]
     MENTIONS_POSITIONS_FIELD_NUMBER: _ClassVar[int]
     EMBEDS_FIELD_NUMBER: _ClassVar[int]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
     embeds_deprecated: _containers.RepeatedScalarFieldContainer[str]
     mentions: _containers.RepeatedScalarFieldContainer[int]
     parent_cast_id: CastId
@@ -161,7 +184,8 @@ class CastAddBody(_message.Message):
     text: str
     mentions_positions: _containers.RepeatedScalarFieldContainer[int]
     embeds: _containers.RepeatedCompositeFieldContainer[Embed]
-    def __init__(self, embeds_deprecated: _Optional[_Iterable[str]] = ..., mentions: _Optional[_Iterable[int]] = ..., parent_cast_id: _Optional[_Union[CastId, _Mapping]] = ..., parent_url: _Optional[str] = ..., text: _Optional[str] = ..., mentions_positions: _Optional[_Iterable[int]] = ..., embeds: _Optional[_Iterable[_Union[Embed, _Mapping]]] = ...) -> None: ...
+    type: CastType
+    def __init__(self, embeds_deprecated: _Optional[_Iterable[str]] = ..., mentions: _Optional[_Iterable[int]] = ..., parent_cast_id: _Optional[_Union[CastId, _Mapping]] = ..., parent_url: _Optional[str] = ..., text: _Optional[str] = ..., mentions_positions: _Optional[_Iterable[int]] = ..., embeds: _Optional[_Iterable[_Union[Embed, _Mapping]]] = ..., type: _Optional[_Union[CastType, str]] = ...) -> None: ...
 
 class CastRemoveBody(_message.Message):
     __slots__ = ["target_hash"]
@@ -187,25 +211,29 @@ class ReactionBody(_message.Message):
     target_url: str
     def __init__(self, type: _Optional[_Union[ReactionType, str]] = ..., target_cast_id: _Optional[_Union[CastId, _Mapping]] = ..., target_url: _Optional[str] = ...) -> None: ...
 
-class VerificationAddEthAddressBody(_message.Message):
-    __slots__ = ["address", "eth_signature", "block_hash", "verification_type", "chain_id"]
+class VerificationAddAddressBody(_message.Message):
+    __slots__ = ["address", "claim_signature", "block_hash", "verification_type", "chain_id", "protocol"]
     ADDRESS_FIELD_NUMBER: _ClassVar[int]
-    ETH_SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    CLAIM_SIGNATURE_FIELD_NUMBER: _ClassVar[int]
     BLOCK_HASH_FIELD_NUMBER: _ClassVar[int]
     VERIFICATION_TYPE_FIELD_NUMBER: _ClassVar[int]
     CHAIN_ID_FIELD_NUMBER: _ClassVar[int]
+    PROTOCOL_FIELD_NUMBER: _ClassVar[int]
     address: bytes
-    eth_signature: bytes
+    claim_signature: bytes
     block_hash: bytes
     verification_type: int
     chain_id: int
-    def __init__(self, address: _Optional[bytes] = ..., eth_signature: _Optional[bytes] = ..., block_hash: _Optional[bytes] = ..., verification_type: _Optional[int] = ..., chain_id: _Optional[int] = ...) -> None: ...
+    protocol: Protocol
+    def __init__(self, address: _Optional[bytes] = ..., claim_signature: _Optional[bytes] = ..., block_hash: _Optional[bytes] = ..., verification_type: _Optional[int] = ..., chain_id: _Optional[int] = ..., protocol: _Optional[_Union[Protocol, str]] = ...) -> None: ...
 
 class VerificationRemoveBody(_message.Message):
-    __slots__ = ["address"]
+    __slots__ = ["address", "protocol"]
     ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    PROTOCOL_FIELD_NUMBER: _ClassVar[int]
     address: bytes
-    def __init__(self, address: _Optional[bytes] = ...) -> None: ...
+    protocol: Protocol
+    def __init__(self, address: _Optional[bytes] = ..., protocol: _Optional[_Union[Protocol, str]] = ...) -> None: ...
 
 class LinkBody(_message.Message):
     __slots__ = ["type", "displayTimestamp", "target_fid"]
@@ -216,3 +244,29 @@ class LinkBody(_message.Message):
     displayTimestamp: int
     target_fid: int
     def __init__(self, type: _Optional[str] = ..., displayTimestamp: _Optional[int] = ..., target_fid: _Optional[int] = ...) -> None: ...
+
+class LinkCompactStateBody(_message.Message):
+    __slots__ = ["type", "target_fids"]
+    TYPE_FIELD_NUMBER: _ClassVar[int]
+    TARGET_FIDS_FIELD_NUMBER: _ClassVar[int]
+    type: str
+    target_fids: _containers.RepeatedScalarFieldContainer[int]
+    def __init__(self, type: _Optional[str] = ..., target_fids: _Optional[_Iterable[int]] = ...) -> None: ...
+
+class FrameActionBody(_message.Message):
+    __slots__ = ["url", "button_index", "cast_id", "input_text", "state", "transaction_id", "address"]
+    URL_FIELD_NUMBER: _ClassVar[int]
+    BUTTON_INDEX_FIELD_NUMBER: _ClassVar[int]
+    CAST_ID_FIELD_NUMBER: _ClassVar[int]
+    INPUT_TEXT_FIELD_NUMBER: _ClassVar[int]
+    STATE_FIELD_NUMBER: _ClassVar[int]
+    TRANSACTION_ID_FIELD_NUMBER: _ClassVar[int]
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    url: bytes
+    button_index: int
+    cast_id: CastId
+    input_text: bytes
+    state: bytes
+    transaction_id: bytes
+    address: bytes
+    def __init__(self, url: _Optional[bytes] = ..., button_index: _Optional[int] = ..., cast_id: _Optional[_Union[CastId, _Mapping]] = ..., input_text: _Optional[bytes] = ..., state: _Optional[bytes] = ..., transaction_id: _Optional[bytes] = ..., address: _Optional[bytes] = ...) -> None: ...
