@@ -42,7 +42,6 @@ class HubService:
                 self._channel = grpc.insecure_channel(address)
         grpc.channel_ready_future(self._channel).result(timeout=10)
         self._stub = rpc_pb2_grpc.HubServiceStub(self._channel)
-    
     def close(self):
         self._channel.close()
     
