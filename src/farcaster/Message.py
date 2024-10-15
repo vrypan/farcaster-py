@@ -2,7 +2,7 @@ from blake3 import blake3
 from nacl.signing import SigningKey
 from eth_account import Account
 from eth_keys import keys
-from eth_account.messages import encode_structured_data
+from eth_account.messages import encode_typed_data
 from . fcproto.message_pb2 import (
     SignatureScheme, HashScheme, MessageData
     )
@@ -55,7 +55,7 @@ class MessageBuilder:
                 "hash": hash,
             },
         }
-        encoded_message = encode_structured_data(eip712_schema)
+        encoded_message = encode_typed_data(eip712_schema)
         signature = self.signer.sign_message(encoded_message)
         return bytes(signature.signature)
 

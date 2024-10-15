@@ -1,20 +1,23 @@
 # This is a very first take on a 
 from eth_account import Account
-from eth_account.messages import encode_structured_data
+from eth_account.messages import encode_typed_data
 import time
 
 from web3 import Web3
 import json
 from nacl.signing import SigningKey
-from pkg_resources import resource_string
+# from pkg_resources import resource_string
+import importlib_resources
 from . import ADDR
 
 SIGNED_KEY_REQUEST_METADATA_ABI = json.loads(
-    resource_string(__name__, "abi/SignedKeyRequestMetadataABI.json")
+    importlib_resources.files(__name__).joinpath('abi/SignedKeyRequestMetadataABI.json').read_bytes()
+    #resource_string(__name__, "abi/SignedKeyRequestMetadataABI.json")
 )
 
 KEY_REGISTRY_ABI = json.loads(
-    resource_string(__name__, "abi/KeyRegistryABI.json")
+    importlib_resources.files(__name__).joinpath('abi/KeyRegistryABI.json').read_bytes()
+    # resource_string(__name__, "abi/KeyRegistryABI.json")
 )
 
 SIGNED_KEY_REQUEST_VALIDATOR_EIP_712_DOMAIN = {
@@ -68,7 +71,7 @@ class Signer:
             },
             'primaryType': "SignedKeyRequest",
         }
-        structured_msg = encode_structured_data(data)
+        structured_msg = encode_typed_data(data)
         signed_data = self.app.sign_message(structured_msg)
         SignedKeyRequestMetadata = self.w3.eth.contract(abi=SIGNED_KEY_REQUEST_METADATA_ABI)
         signed_call = SignedKeyRequestMetadata.encodeABI("encodeMetadata", args=[(
